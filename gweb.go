@@ -13,7 +13,6 @@ type gweb struct {
 	RouterGroup
 }
 
-// todo 细化，修bug
 func (g *gweb) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	match, handleFunc, grep := g.PathMatch(request.RequestURI, request.Method)
 	if handleFunc == nil {

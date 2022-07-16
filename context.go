@@ -19,7 +19,7 @@ type Context struct {
 	lock   sync.RWMutex
 	values map[string]any
 
-	flag bool
+	survive bool
 }
 
 type HandlerFunc func(ctx *Context)
@@ -43,11 +43,11 @@ func (c *Context) Set(key string, value any) {
 }
 
 func (c *Context) Stop() {
-	c.flag = false
+	c.survive = false
 }
 
 func (c *Context) runFunc(handlerFunc HandlerFunc) {
-	if !c.flag {
+	if !c.survive {
 		return
 	}
 	handlerFunc(c)

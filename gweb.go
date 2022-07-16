@@ -25,11 +25,15 @@ func (g *gweb) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		Request: request,
 		Writer:  writer,
 		param:   match,
-		flag:    true,
+		survive: true,
 	}
-	for _, mid := range grep.middlewares {
-		ctx.runFunc(mid)
+	for grep != nil {
+		for i := range grep.middlewares {
+			ctx.runFunc(grep.middlewares[i])
+		}
+		grep = grep.parent
 	}
+
 	ctx.runFunc(handleFunc)
 }
 

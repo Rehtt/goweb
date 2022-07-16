@@ -6,15 +6,14 @@
 package gweb
 
 import (
-	"net/http"
 	"strings"
 )
 
 type RouterGroup struct {
 	index       int
-	middlewares []http.Handler
+	middlewares []HandlerFunc
 	path        string
-	method      map[string]http.HandlerFunc
+	method      map[string]HandlerFunc
 	child       map[string]*RouterGroup
 	parent      *RouterGroup
 }
@@ -22,9 +21,9 @@ type RouterGroup struct {
 func (g *RouterGroup) Grep(path string) *RouterGroup {
 	return g.position(path)
 }
-func (g *RouterGroup) Middleware(handlers ...http.Handler) {
+func (g *RouterGroup) Middleware(handlers ...HandlerFunc) {
 	if len(g.middlewares) == 0 {
-		g.middlewares = make([]http.Handler, 0, len(handlers)+5)
+		g.middlewares = make([]HandlerFunc, 0, len(handlers)+5)
 	}
 	g.middlewares = append(g.middlewares, handlers...)
 }
@@ -68,7 +67,7 @@ func (g *RouterGroup) completePath() string {
 	}
 	return "/" + strings.Join(completePath, "/")
 }
-func (g *RouterGroup) handle(method string, path string, handlerFunc http.HandlerFunc) {
+func (g *RouterGroup) handle(method string, path string, handlerFunc HandlerFunc) {
 	g = g.position(path)
 	if method == ANY && len(g.method) > 1 {
 		if _, ok := g.method[ANY]; ok {
@@ -79,34 +78,35 @@ func (g *RouterGroup) handle(method string, path string, handlerFunc http.Handle
 		panic(g.completePath() + "该路由method重复")
 	}
 	if g.method == nil {
-		g.method = make(map[string]http.HandlerFunc, 5)
+		g.method = make(map[string]HandlerFunc, 5)
 	}
 	g.method[method] = handlerFunc
 }
-func (g *RouterGroup) GET(path string, handlerFunc http.HandlerFunc) {
+func (g *RouterGroup) GET(path string, handlerFunc HandlerFunc) {
 	g.handle(GET, path, handlerFunc)
 }
-func (g *RouterGroup) POST(path string, handlerFunc http.HandlerFunc) {
+func (g *RouterGroup) POST(path string, handlerFunc HandlerFunc) {
 	g.handle(POST, path, handlerFunc)
 }
-func (g *RouterGroup) PUT(path string, handlerFunc http.HandlerFunc) {
+func (g *RouterGroup) PUT(path string, handlerFunc HandlerFunc) {
 	g.handle(PUT, path, handlerFunc)
 }
-func (g *RouterGroup) DELETE(path string, handlerFunc http.HandlerFunc) {
+func (g *RouterGroup) DELETE(path string, handlerFunc HandlerFunc) {
 	g.handle(DELETE, path, handlerFunc)
 }
-func (g *RouterGroup) Any(path string, handlerFunc http.HandlerFunc) {
+func (g *RouterGroup) Any(path string, handlerFunc HandlerFunc) {
 	g.handle(ANY, path, handlerFunc)
 }
 
-func (g *RouterGroup) PathMatch(path, method string) (match map[string]string, handle http.HandlerFunc, group *RouterGroup) {
+func (g *RouterGroup) PathMatch(path, method string) (match map[string]string, handle HandlerFunc, grep *RouterGroup) {
 	match = make(map[string]string)
 	paths := strings.Split(path, "/")
+	var ok bool
 	for _, p := range paths {
 		if p == "" {
 			continue
 		}
-		if _, ok := g.child[p]; ok {
+		if _, ok = g.child[p]; ok {
 			g = g.child[p]
 			continue
 		}
@@ -120,12 +120,18 @@ func (g *RouterGroup) PathMatch(path, method string) (match map[string]string, h
 			}
 		}
 		if !find {
-			return nil, nil, nil
+			return
 		}
 	}
-	h, ok := g.method[method]
+
+	handle, ok = g.method[method]
 	if !ok {
-		return nil, nil, nil
+		for m := range g.method {
+			if m == ANY {
+				handle = g.method[m]
+			}
+		}
 	}
-	return match, h, g
+	grep = g
+	return
 }

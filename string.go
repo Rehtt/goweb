@@ -6,9 +6,9 @@
 package gweb
 
 const (
-	GET    = "get"
-	POST   = "post"
-	DELETE = "delete"
-	PUT    = "put"
-	ANY    = "any"
+	GET    = "GET"
+	POST   = "POST"
+	DELETE = "DELETE"
+	PUT    = "PUT"
+	ANY    = "ANY"
 )

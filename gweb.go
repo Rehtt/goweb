@@ -20,10 +20,17 @@ func (g *gweb) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		http.Redirect(writer, request, "/404", 404)
 		return
 	}
-	for _, m := range grep.middlewares {
-		m.ServeHTTP(writer, request)
+
+	ctx := &Context{
+		Request: request,
+		Writer:  writer,
+		param:   match,
+		flag:    true,
 	}
-	handleFunc.ServeHTTP(writer, request)
+	for _, mid := range grep.middlewares {
+		ctx.runFunc(mid)
+	}
+	ctx.runFunc(handleFunc)
 }
 
 func New() *gweb {

@@ -7,24 +7,24 @@ package main
 
 import (
 	"fmt"
-	"gweb"
+	"github.com/Rehtt/goweb"
 	"net/http"
 )
 
 func main() {
-	web := gweb.New()
-	web.Middleware(func(ctx *gweb.Context) {
+	web := goweb.New()
+	web.Middleware(func(ctx *goweb.Context) {
 		fmt.Println("中间件")
 	})
-	web.NoRoute(func(ctx *gweb.Context) {
+	web.NoRoute(func(ctx *goweb.Context) {
 		ctx.Writer.Write([]byte("找不到啊大佬"))
 	})
 
-	web.Any("/123/#asd/234", func(ctx *gweb.Context) {
+	web.Any("/123/#asd/234", func(ctx *goweb.Context) {
 		fmt.Println(ctx.GetParam("asd"), "获取动态路由参数")
 	})
 	api := web.Grep("/api")
-	api.GET("/test", func(ctx *gweb.Context) {
+	api.GET("/test", func(ctx *goweb.Context) {
 		fmt.Println("test")
 	})
 

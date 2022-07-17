@@ -16,6 +16,9 @@ func main() {
 	web.Middleware(func(ctx *gweb.Context) {
 		fmt.Println("中间件")
 	})
+	web.NoRoute(func(ctx *gweb.Context) {
+		ctx.Writer.Write([]byte("找不到啊大佬"))
+	})
 
 	web.Any("/123/#asd/234", func(ctx *gweb.Context) {
 		fmt.Println(ctx.GetParam("asd"), "获取动态路由参数")

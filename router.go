@@ -100,9 +100,8 @@ func (g *RouterGroup) Any(path string, handlerFunc HandlerFunc) {
 
 func (g *RouterGroup) PathMatch(path, method string) (match map[string]string, handle HandlerFunc, grep *RouterGroup) {
 	match = make(map[string]string)
-	paths := strings.Split(path, "/")
 	var ok bool
-	for _, p := range paths {
+	for _, p := range strings.Split(path, "/") {
 		if p == "" {
 			continue
 		}

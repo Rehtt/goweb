@@ -11,21 +11,23 @@ import (
 
 type gweb struct {
 	RouterGroup
+	noRouter HandlerFunc
 }
 
 func (g *gweb) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	match, handleFunc, grep := g.PathMatch(request.RequestURI, request.Method)
-	if handleFunc == nil {
-		http.Redirect(writer, request, "/404", 404)
-		return
-	}
-
 	ctx := &Context{
 		Request: request,
 		Writer:  writer,
-		param:   match,
 		survive: true,
 	}
+	match, handleFunc, grep := g.PathMatch(request.RequestURI, request.Method)
+	if handleFunc == nil {
+		g.handler404(ctx)
+		return
+	}
+
+	ctx.param = match
+
 	for grep != nil {
 		for i := range grep.middlewares {
 			ctx.runFunc(grep.middlewares[i])
@@ -34,6 +36,18 @@ func (g *gweb) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	ctx.runFunc(handleFunc)
+}
+
+func (g *gweb) NoRoute(handlerFunc HandlerFunc) {
+	g.noRouter = handlerFunc
+}
+func (g *gweb) handler404(ctx *Context) {
+	ctx.Writer.WriteHeader(http.StatusNotFound)
+	if g.noRouter != nil {
+		g.noRouter(ctx)
+	} else {
+		http.NotFound(ctx.Writer, ctx.Request)
+	}
 }
 
 func New() *gweb {

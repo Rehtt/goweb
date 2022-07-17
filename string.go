@@ -6,9 +6,12 @@
 package goweb
 
 const (
-	GET    = "GET"
-	POST   = "POST"
-	DELETE = "DELETE"
-	PUT    = "PUT"
-	ANY    = "ANY"
+	GET     = "GET"
+	POST    = "POST"
+	DELETE  = "DELETE"
+	PUT     = "PUT"
+	HEAD    = "HEAD"
+	OPTIONS = "OPTIONS"
+	CONNECT = "CONNECT"
+	ANY     = "ANY"
 )

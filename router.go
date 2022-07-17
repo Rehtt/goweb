@@ -82,21 +82,6 @@ func (g *RouterGroup) handle(method string, path string, handlerFunc HandlerFunc
 	}
 	g.method[method] = handlerFunc
 }
-func (g *RouterGroup) GET(path string, handlerFunc HandlerFunc) {
-	g.handle(GET, path, handlerFunc)
-}
-func (g *RouterGroup) POST(path string, handlerFunc HandlerFunc) {
-	g.handle(POST, path, handlerFunc)
-}
-func (g *RouterGroup) PUT(path string, handlerFunc HandlerFunc) {
-	g.handle(PUT, path, handlerFunc)
-}
-func (g *RouterGroup) DELETE(path string, handlerFunc HandlerFunc) {
-	g.handle(DELETE, path, handlerFunc)
-}
-func (g *RouterGroup) Any(path string, handlerFunc HandlerFunc) {
-	g.handle(ANY, path, handlerFunc)
-}
 
 func (g *RouterGroup) PathMatch(path, method string) (match map[string]string, handle HandlerFunc, grep *RouterGroup) {
 	match = make(map[string]string)

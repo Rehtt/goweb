@@ -3,18 +3,18 @@
  * @Date: 2022/7/16 下午 04:30
  */
 
-package gweb
+package goweb
 
 import (
 	"net/http"
 )
 
-type gweb struct {
+type GOweb struct {
 	RouterGroup
 	noRouter HandlerFunc
 }
 
-func (g *gweb) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+func (g *GOweb) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	ctx := &Context{
 		Request: request,
 		Writer:  writer,
@@ -38,10 +38,10 @@ func (g *gweb) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	ctx.runFunc(handleFunc)
 }
 
-func (g *gweb) NoRoute(handlerFunc HandlerFunc) {
+func (g *GOweb) NoRoute(handlerFunc HandlerFunc) {
 	g.noRouter = handlerFunc
 }
-func (g *gweb) handler404(ctx *Context) {
+func (g *GOweb) handler404(ctx *Context) {
 	ctx.Writer.WriteHeader(http.StatusNotFound)
 	if g.noRouter != nil {
 		g.noRouter(ctx)
@@ -50,6 +50,6 @@ func (g *gweb) handler404(ctx *Context) {
 	}
 }
 
-func New() *gweb {
-	return new(gweb)
+func New() *GOweb {
+	return new(GOweb)
 }

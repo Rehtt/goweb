@@ -1,3 +1,3 @@
-module github.com/Rehtt/gweb
+module github.com/Rehtt/goweb
 
 go 1.18

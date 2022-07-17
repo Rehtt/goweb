@@ -16,6 +16,7 @@ type RouterGroup struct {
 	method      map[string]HandlerFunc
 	child       map[string]*RouterGroup
 	parent      *RouterGroup
+	goweb       *GOweb
 }
 
 func (g *RouterGroup) Grep(path string) *RouterGroup {
@@ -29,6 +30,10 @@ func (g *RouterGroup) Middleware(handlers ...HandlerFunc) {
 }
 
 func (g *RouterGroup) position(path string) *RouterGroup {
+	if g.goweb.routerGroupLock {
+		return nil
+	}
+
 	for _, p := range strings.Split(path, "/") {
 		if p == "" {
 			continue

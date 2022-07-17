@@ -11,10 +11,16 @@ import (
 
 type GOweb struct {
 	RouterGroup
+	routerGroupLock bool
+
 	noRouter HandlerFunc
 }
 
 func (g *GOweb) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	if !g.routerGroupLock {
+		g.routerGroupLock = true
+	}
+
 	ctx := &Context{
 		Request: request,
 		Writer:  writer,

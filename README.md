@@ -1,3 +1,5 @@
+后续更新迁移至 github.com/Rehtt/Kit/web
+
 一个简单的web api框架
 
 支持中间件，路由编写更友好

@@ -56,6 +56,8 @@ func (g *GOweb) handler404(ctx *Context) {
 	}
 }
 
+//Deprecated
+//迁移至 github.com/Rehtt/Kit/web
 func New() *GOweb {
 	return new(GOweb)
 }

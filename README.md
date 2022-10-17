@@ -1,4 +1,4 @@
-后续更新迁移至 github.com/Rehtt/Kit/web
+后续更新迁移至 https://github.com/Rehtt/Kit/tree/master/web
 
 一个简单的web api框架
 
